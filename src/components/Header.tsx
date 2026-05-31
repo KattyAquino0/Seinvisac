@@ -8,11 +8,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <img 
-              src="/Images/logos.png" 
+              src="/Images/logo2.png" 
               alt="SEINVISAC" 
-              width={100} 
-              height={40}
-              className="h-9 w-auto"
+              className="h-14 -px-14 w-auto"
             />
           </div>
           <nav className="hidden md:flex space-x-8">

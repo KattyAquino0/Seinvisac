@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-7">
           <div>
             <Image 
-              src="/Images/logos.png" 
+              src="/Images/copi_Seinvisac.png" 
               alt="SEINVISAC" 
               width={120} 
               height={40}
