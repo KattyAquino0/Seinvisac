@@ -9,7 +9,7 @@ interface Imagen {
 }
 
 interface Producto {
-  id: number;
+  id: string;
   nombre: string;
   descripcion: string;
   categoria: string;
@@ -33,10 +33,20 @@ export default function Productos() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // [SENSEI TIP]: Instanciamos la variable de entorno fuera del useEffect para que esté disponible en todo el componente (ej. para las imágenes).
+  // El fallback ("http://localhost:5000") previene que la app crashee si olvidas crear el .env, pero en producción tomará el valor real.
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/productos");
+        // [SENSEI TIP]: Inyección dinámica de la URL. Ahora el código es agnóstico al entorno.
+        const res = await fetch(`${backendUrl}/api/productos`);
+        
+        if (!res.ok) {
+          throw new Error(`Error HTTP: ${res.status}`);
+        }
+
         const data = await res.json();
         setProductos(data);
       } catch (error) {
@@ -45,8 +55,9 @@ export default function Productos() {
         setLoading(false);
       }
     };
+    
     fetchProductos();
-  }, []);
+  }, [backendUrl]); // [SENSEI TIP]: Se añade backendUrl al array de dependencias por buenas prácticas de React.
 
   const productosFiltrados = useMemo(() => {
     if (categoriaActiva === "Todos") return productos;
@@ -91,6 +102,7 @@ export default function Productos() {
                 Equipos de protección personal y artículos industriales de alta calidad
               </p>
             </div>
+            
             {loading ? (
               <p className="text-gray-500 mt-10">Cargando productos...</p>
             ) : (
@@ -115,7 +127,8 @@ export default function Productos() {
                         <img
                           src={
                             producto.imagenes && producto.imagenes[0]
-                              ? `http://localhost:5000${producto.imagenes[0].url}`
+                              // [SENSEI TIP]: Reemplazamos el localhost duro por nuestra variable dinámica.
+                              ? `${backendUrl}${producto.imagenes[0].url}`
                               : "/images/default.png"
                           }
                           alt={producto.nombre}
