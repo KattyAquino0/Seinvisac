@@ -73,7 +73,7 @@ export default function FAQ() {
           transition={{ duration: 0.6 }}
         >
           <span className="text-black">Preguntas</span>{" "}
-          <span className="text-orange-500">Frecuentes</span>
+          <span className="text-[#D77F4A]">Frecuentes</span>
         </motion.h2>
         <motion.p
           className="text-gray-600 text-center mb-12 text-lg"
@@ -93,7 +93,7 @@ export default function FAQ() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="bg-orange-500 text-white px-4 py-4 font-semibold text-lg">
+              <div className="bg-[#D77F4A] text-white px-4 py-4 font-semibold text-lg">
                 {section.category}
               </div>
               <div className="divide-y">
@@ -108,9 +108,9 @@ export default function FAQ() {
                       >
                         <span>{item.q}</span>
                         {isOpen ? (
-                          <Minus className="text-orange-500 w-5 h-5" /> // 👈 cuando abre
+                          <Minus className="text-[#D77F4A] w-5 h-5" /> // 👈 cuando abre
                         ) : (
-                          <Plus className="text-orange-500 w-5 h-5" /> // 👈 cuando cierra
+                          <Plus className="text-[#D77F4A] w-5 h-5" /> // 👈 cuando cierra
                         )}
                       </button>
                       <motion.div

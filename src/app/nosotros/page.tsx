@@ -50,17 +50,17 @@ export default function Nosotros() {
           <div className="space-y-6">
             {[
               {
-                icon: <Shield className="w-6 h-6 text-orange-600" />,
+                icon: <Shield className="w-6 h-6 text-[#D77F4A]" />,
                 title: "Misión",
                 desc: "Proveer equipos de protección personal con altos estándares de calidad, garantizando la seguridad y bienestar de los trabajadores en sus actividades laborales."
               },
               {
-                icon: <Eye className="w-6 h-6 text-orange-600" />,
+                icon: <Eye className="w-6 h-6 text-[#D77F4A]" />,
                 title: "Visión",
                 desc: "Ser líderes en el sector de equipos de protección personal, innovando en productos que respondan a las necesidades del mercado y contribuyan al desarrollo de una cultura de seguridad laboral en el ámbito nacional e internacional."
               },
               {
-                icon: <Star className="w-6 h-6 text-orange-600" />,
+                icon: <Star className="w-6 h-6 text-[#D77F4A]" />,
                 title: "Valores",
                 desc: (
                   <ul className="list-disc list-inside space-y-1 text-left">

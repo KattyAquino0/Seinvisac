@@ -72,7 +72,7 @@ export default function Home() {
                   de seguridad industrial.
                 </p>
                 <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-orange-500 mb-4">
+                  <h3 className="text-xl font-semibold text-[#D77F4A] mb-4">
                     ¿Quiénes Somos?
                   </h3>
                   <p className="text-gray-600">
@@ -81,7 +81,7 @@ export default function Home() {
                     seguridad industrial de alta calidad.
                   </p>
                   <motion.button
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md font-semibold shadow-md"
+                    className="bg-[#D77F4A] hover:bg-[#b96634] text-white px-6 py-3 rounded-md font-semibold shadow-md"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -133,9 +133,9 @@ export default function Home() {
                   className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300"
                   variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
                 >
-                  <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                  <div className="bg-[#D77F4A] bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
                     <svg
-                      className="w-8 h-8 text-orange-500"
+                      className="w-8 h-8 text-white"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -225,7 +225,7 @@ export default function Home() {
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center">
-                        <span className="text-orange-500 font-bold">✓</span>
+                        <span className="text-[#D77F4A] font-bold">✓</span>
                       </div>
                       <span className="text-gray-700 text-base">{item}</span>
                     </li>
@@ -296,7 +296,7 @@ export default function Home() {
                   className="flex flex-col items-center text-center px-6"
                   variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
                 >
-                  <div className="w-20 h-20 mb-6 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform duration-300">
+                  <div className="w-20 h-20 mb-6 rounded-full bg-[#D77F4A] flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform duration-300">
                     <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
