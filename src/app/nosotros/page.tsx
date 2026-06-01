@@ -2,7 +2,7 @@
 import Head from "next/head";
 import Header from "../../components/Header";
 import Fotter from "../../components/Footer";
-import { Shield, Eye, Star } from "lucide-react";
+import { Shield, Eye, Star, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Nosotros() {
@@ -109,6 +109,15 @@ export default function Nosotros() {
           </p>
         </motion.div>
       </div>
+      <a
+          href="https://wa.me/51924338443?text=Hola%20SEINVISAC,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
+          aria-label="WhatsApp"
+        >
+          <MessageCircle size={28} />
+        </a>
       <Fotter />
     </>
   );

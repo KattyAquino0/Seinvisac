@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import { MessageCircle } from "lucide-react";
 
 interface Imagen {
   url: string;
@@ -57,7 +58,7 @@ export default function Productos() {
     };
     
     fetchProductos();
-  }, [backendUrl]); // [SENSEI TIP]: Se añade backendUrl al array de dependencias por buenas prácticas de React.
+  }, [backendUrl]); 
 
   const productosFiltrados = useMemo(() => {
     if (categoriaActiva === "Todos") return productos;
@@ -154,6 +155,15 @@ export default function Productos() {
           </section>
         </div>
       </main>
+       <a
+            href="https://wa.me/51924338443?text=Hola%20SEINVISAC,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
+            aria-label="WhatsApp"
+          >
+            <MessageCircle size={28} />
+          </a>
       <Footer />
     </>
   );

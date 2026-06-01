@@ -43,7 +43,7 @@ export default function Footer() {
             <div className="space-y-2 text-m text-white">
               <MapMinusIcon className="w-5 h-5 text-[#D77F4A]" /><p>Dirección:Los libertadores N°393 - Urb. Valdiviezo- Ate</p>
               <Mail className="w-5 h-5 text-[#D77F4A]" /><p>Correo Electronico:seinvisac@gmail.com</p>
-              <Phone className="w-5 h-5 text-[#D77F4A]"/><p>Telefono:326-1348   Celular:975447800</p>
+              <Phone className="w-5 h-5 text-[#D77F4A]"/><p>Telefono:326-1348   Celular: 924 338 443</p>
             </div>
           </div>
         </div>
