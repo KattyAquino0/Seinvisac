@@ -25,7 +25,6 @@ const categorias = [
   { id: "Protección respiratoria", nombre: "Protección respiratoria" },
   { id: "Zapato de seguridad", nombre: "Zapato de seguridad" },
   { id: "Protección de cabeza", nombre: "Protección de cabeza" },
-  { id: "Guantes industriales", nombre: "Guantes industriales" },
 ];
 
 export default function Productos() {
@@ -33,14 +32,11 @@ export default function Productos() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // [SENSEI TIP]: Instanciamos la variable de entorno fuera del useEffect para que esté disponible en todo el componente (ej. para las imágenes).
-  // El fallback ("http://localhost:5000") previene que la app crashee si olvidas crear el .env, pero en producción tomará el valor real.
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        // [SENSEI TIP]: Inyección dinámica de la URL. Ahora el código es agnóstico al entorno.
         const res = await fetch(`${backendUrl}/api/productos`);
         
         if (!res.ok) {
@@ -57,7 +53,7 @@ export default function Productos() {
     };
     
     fetchProductos();
-  }, [backendUrl]); // [SENSEI TIP]: Se añade backendUrl al array de dependencias por buenas prácticas de React.
+  }, [backendUrl]); 
 
   const productosFiltrados = useMemo(() => {
     if (categoriaActiva === "Todos") return productos;
@@ -127,7 +123,6 @@ export default function Productos() {
                         <img
                           src={
                             producto.imagenes && producto.imagenes[0]
-                              // [SENSEI TIP]: Reemplazamos el localhost duro por nuestra variable dinámica.
                               ? `${backendUrl}${producto.imagenes[0].url}`
                               : "/images/default.png"
                           }

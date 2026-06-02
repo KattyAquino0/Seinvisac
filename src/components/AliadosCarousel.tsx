@@ -1,10 +1,6 @@
-"use client"; // si usas Next.js 13+ con app router
-
+"use client";
 import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/autoplay";
-import { Autoplay } from "swiper/modules";
+import { motion } from "framer-motion";
 
 const aliados = [
   { src: "/Images/lg1.png", alt: "3M" },
@@ -19,36 +15,45 @@ const aliados = [
 ];
 
 export default function AliadosCarousel() {
+  // Duplicamos el arreglo para la ilusión óptica del bucle infinito
+  const duplicatedAliados = [...aliados, ...aliados];
+
   return (
-    <section className="bg-white w-full ">
-      <div className="container mx-auto px-2 py-6">
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView={2}
-          autoplay={{ delay: 3000, disableOnInteraction: true }}
-          loop
-          breakpoints={{
-            640: { slidesPerView: 3 },
-            768: { slidesPerView: 4 },
-            1024: { slidesPerView: 5 },
-          }}
-          className="flex items-center"
-        >
-          {aliados.map((aliado, index) => (
-            <SwiperSlide key={index} className="flex justify-center">
-              <div className="border border-gray-300 bg-white rounded-2xl shadow-sm p-4 flex items-center justify-center w-40 h-20 hover:shadow-md transition">
+    // [SENSEI TIP]: Quitamos el overflow-hidden de la sección para que no restrinja los bordes de la pantalla.
+    <section className="bg-white w-full py-6">
+      
+      {/* [SENSEI TIP]: Pasamos el overflow-hidden al 'container'. 
+          Además, aplicamos mask-image. Esto crea un efecto donde el 10% izquierdo y derecho 
+          del contenedor se vuelven transparentes, desvaneciendo los logos al entrar y salir. */}
+      <div 
+        className="container mx-auto px-4 overflow-hidden relative"
+        style={{ 
+          maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', 
+          WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' 
+        }}
+      >
+        <div className="relative w-full flex group py-2">
+          <motion.div
+            className="flex gap-6 px-4 w-max"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ ease: "linear", duration: 30, repeat: Infinity }}
+          >
+            {duplicatedAliados.map((aliado, index) => (
+              <div
+                key={index}
+                className="border border-gray-200 bg-white rounded-2xl shadow-sm p-4 flex items-center justify-center w-40 h-20 hover:shadow-md transition-shadow shrink-0"
+              >
                 <Image
                   src={aliado.src}
                   alt={aliado.alt}
                   width={100}
                   height={60}
-                  className="object-contain  transition duration-300"
+                  className="object-contain"
                 />
               </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );
