@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -7,7 +8,48 @@ import VideoCarousel from "@/components/VideoCarousel";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 
+interface Imagen {
+  url: string;
+}
+
+interface Producto {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  categoria: string;
+  imagenes: Imagen[];
+}
+
 export default function Home() {
+  const [destacados, setDestacados] = useState<Producto[]>([]);
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
+  useEffect(() => {
+    const fetchDestacados = async () => {
+      try {
+        const res = await fetch(`${backendUrl}/api/productos`);
+        if (!res.ok) throw new Error("Error fetching productos");
+        
+        const data: Producto[] = await res.json();
+        
+
+        const categoriasVistas = new Set();
+        const filtrados = data.filter((prod) => {
+          if (!categoriasVistas.has(prod.categoria)) {
+            categoriasVistas.add(prod.categoria);
+            return true;
+          }
+          return false;
+        });
+        
+        setDestacados(filtrados);
+      } catch (error) {
+        console.error("Error al obtener productos destacados:", error);
+      }
+    };
+    fetchDestacados();
+  }, [backendUrl]);
+
   return (
     <>
       <Header />
@@ -47,6 +89,7 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
         <motion.section
           className="py-0"
           initial={{ opacity: 0 }}
@@ -56,6 +99,7 @@ export default function Home() {
         >
           <AliadosCarousel />
         </motion.section>
+
         <section className="py-4 bg-white">
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -109,6 +153,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="py-4 bg-white">
           <div className="container mx-auto px-4">
             <motion.div
@@ -145,17 +190,16 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {item.title}
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-gray-700 leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </section>
-        <section className="py-9 bg-white">
-          <div className="container mx-auto px-6">
+
+        <section className="py-12 bg-white overflow-hidden">
+          <div className="container mx-auto px-6 mb-10">
             <motion.h2
               className="text-3xl font-extrabold text-gray-900 mb-6 text-center"
               initial={{ opacity: 0, y: 30 }}
@@ -166,7 +210,7 @@ export default function Home() {
               Productos Destacados
             </motion.h2>
             <motion.p
-              className="text-gray-600 mb-12 text-center max-w-2xl mx-auto"
+              className="text-gray-600 text-center max-w-2xl mx-auto"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -174,32 +218,51 @@ export default function Home() {
             >
               Descubre algunos de nuestros productos más populares en equipos de protección personal y botines de seguridad industrial.
             </motion.p>
-            <motion.div
-              className="grid md:grid-cols-3 gap-8"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-              }}
-            >
-              {[1, 2, 3].map((num) => (
-                <motion.div
-                  key={num}
-                  className="p-6 bg-gray-50 rounded-2xl shadow-md hover:shadow-lg transition-all"
-                  variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
-                >
-                  <div className="h-48 bg-white rounded-xl flex items-center justify-center mb-4">
-                    <span className="text-gray-400 text-lg">Imagen {num}</span>
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Producto {num}</h4>
-                  <p className="text-gray-600 text-sm mt-2">Descripción breve del producto {num}.</p>
-                </motion.div>
-              ))}
-            </motion.div>
           </div>
+
+          {destacados.length === 0 ? (
+            <p className="text-center text-gray-500 py-10">Cargando catálogo destacado...</p>
+          ) : (
+
+            <div className="relative w-full flex group">
+              <motion.div
+                className="flex gap-8 px-4 w-max"
+
+                animate={{ x: ["0%", "-50%"] }}
+
+                transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+              >
+
+                {[...destacados, ...destacados].map((producto, index) => (
+                  <div
+                    key={`${producto.id}-${index}`}
+                    
+                    className="w-[350px] shrink-0 p-6 bg-gray-50 rounded-2xl border-2 border-transparent shadow-md hover:shadow-2xl hover:-translate-y-2 hover:border-orange-500 transition-all duration-300 cursor-pointer"
+                  >
+                    <div className="relative h-48 bg-white rounded-xl flex items-center justify-center mb-4 overflow-hidden p-4">
+                      <img
+                        src={
+                          producto.imagenes && producto.imagenes[0]
+                            ? `${backendUrl}${producto.imagenes[0].url}`
+                            : "/images/default.png"
+                        }
+                        alt={producto.nombre}
+                        className="object-contain w-full h-full mix-blend-multiply transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-orange-500 uppercase tracking-wider mb-1 block">
+                      {producto.categoria}
+                    </span>
+                    <h4 className="text-lg font-semibold text-gray-900 line-clamp-1">{producto.nombre}</h4>
+                    <p className="text-gray-600 text-sm mt-2 line-clamp-2">{producto.descripcion}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          )}
         </section>
+
+
         <section className="py-20 bg-gray-100">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -241,30 +304,20 @@ export default function Home() {
                 viewport={{ once: true }}
               >
                 <div className="row-span-2 rounded-xl overflow-hidden shadow-md">
-                  <img
-                    src="/images/botin3.jpg"
-                    alt="Botín de seguridad"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src="/images/botin3.jpg" alt="Botín de seguridad" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div className="rounded-xl overflow-hidden shadow-md">
-                  <img
-                    src="/images/botin1.png"
-                    alt="Botín en producción"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src="/images/botin1.png" alt="Botín en producción" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div className="rounded-xl overflow-hidden shadow-md">
-                  <img
-                    src="/images/botin2.jpg"
-                    alt="Botines en fábrica"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src="/images/botin2.jpg" alt="Botines en fábrica" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               </motion.div>
             </div>
           </div>
         </section>
+
+
         <section className="py-20 bg-white">
           <div className="container mx-auto px-6 lg:px-12">
             <motion.h3
@@ -277,8 +330,7 @@ export default function Home() {
               ¿Por qué elegirnos?
             </motion.h3>
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 
-                          divide-y md:divide-y-0 md:divide-x divide-gray-200"
+              className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
