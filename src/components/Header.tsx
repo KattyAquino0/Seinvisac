@@ -55,9 +55,7 @@ const Header = () => {
               );
             })}
           </nav>
-          
-          {/* Botón de Contacto destacado (Desktop) */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center px-3">
             <Link 
               href="/contacto" 
               className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold tracking-wide text-white bg-[#D77F4A] hover:bg-[#b96634] rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
@@ -82,7 +80,6 @@ const Header = () => {
               </svg>
             </button>
           </div>
-          
         </div>
       </div>
 
@@ -106,8 +103,6 @@ const Header = () => {
               </Link>
             );
           })}
-          
-          {/* Botón de Contacto dentro del menú móvil */}
           <div className="pt-4 px-4">
             <Link
               href="/contacto"

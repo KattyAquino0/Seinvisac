@@ -15,7 +15,6 @@ export default function Contacto() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Manejador de cambios en los inputs (Vincular estado con UI)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
