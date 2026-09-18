@@ -12,19 +12,24 @@ const videos: string[] = [
 export default function VideoCarousel() {
   const [current, setCurrent] = useState<number>(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  
+
+  const isFirstMount = useRef(true); 
 
   useEffect(() => {
+
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       
       if (index === current) {
-        // Reproducimos el video actual desde el inicio
         video.currentTime = 0;
         video.play().catch(() => {});
       } else {
-        // [SENSEI TIP]: La magia del Crossfade.
-        // En lugar de pausarlo y resetearlo de inmediato, le damos 700ms 
-        // para que termine su transición de opacidad. Así evitamos el "salto".
         setTimeout(() => {
           video.pause();
         }, 700);
@@ -41,19 +46,19 @@ export default function VideoCarousel() {
   };
 
   return (
-    // Fondo negro para que el cruce de opacidades se vea elegante
-    <div className="relative h-[32rem] w-full overflow-hidden bg-black">
+
+    <div className="relative h-[32rem] w-full overflow-hidden bg-[#111]">
       {videos.map((video, index) => (
         <video
           key={index}
           ref={(el) => {
             videoRefs.current[index] = el ?? null;
           }}
-          // [SENSEI TIP]: Quitamos el 'loop' y usamos onEnded. 
-          // Cuando un video termine naturalmente, llamará a nextVideo.
           onEnded={nextVideo}
           muted
           playsInline
+          autoPlay={index === 0}
+          preload={index === 0 ? "auto" : "metadata"}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 z-0 pointer-events-none ${
             index === current ? "opacity-100" : "opacity-0"
           }`}

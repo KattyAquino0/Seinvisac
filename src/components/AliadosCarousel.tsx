@@ -1,60 +1,117 @@
 "use client";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const aliados = [
-  { src: "/Images/lg1.png", alt: "3M" },
-  { src: "/Images/lg2.png", alt: "MSA" },
-  { src: "/Images/lg4.png", alt: "STEELPRO SAFETY" },
-  { src: "/Images/lg5-.png", alt: "3M" },
-  { src: "/Images/lg6.png", alt: "SHOWA" },
-  { src: "/Images/lg7.png", alt: "SHOWA" },
-  { src: "/Images/lg8.png", alt: "SHOWA" },
-  { src: "/Images/lg9.png", alt: "SHOWA" },
-  { src: "/Images/lg10.png", alt: "SHOWA" },
+const videos: string[] = [
+  "/Images/vid1.mp4",
+  "/Images/vid2.mp4",
+  "/Images/vid3.mp4",
+  "/Images/vid4.mp4",
 ];
 
-export default function AliadosCarousel() {
-  // Duplicamos el arreglo para la ilusión óptica del bucle infinito
-  const duplicatedAliados = [...aliados, ...aliados];
+export default function VideoCarousel() {
+  const [current, setCurrent] = useState<number>(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const isFirstMount = useRef(true);
+
+  const isTransitioning = useRef(false);
+
+  const nextVideo = useCallback(() => {
+    setCurrent((prev) => (prev === videos.length - 1 ? 0 : prev + 1));
+  }, []);
+
+  const prevVideo = useCallback(() => {
+    setCurrent((prev) => (prev === 0 ? videos.length - 1 : prev - 1));
+  }, []);
+
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+
+    isTransitioning.current = false;
+
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+      
+      if (index === current) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        setTimeout(() => {
+          video.pause();
+        }, 700);
+      }
+    });
+  }, [current]);
+
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>, index: number) => {
+
+    if (index !== current || isTransitioning.current) return;
+    
+    const video = e.currentTarget;
+    
+
+    if (video.duration > 0 && video.duration - video.currentTime <= 0.8) {
+      isTransitioning.current = true;
+      nextVideo();
+    }
+  };
 
   return (
-    // [SENSEI TIP]: Quitamos el overflow-hidden de la sección para que no restrinja los bordes de la pantalla.
-    <section className="bg-white w-full py-6">
+    <div className="relative h-[32rem] w-full overflow-hidden bg-[#111]">
+      {videos.map((video, index) => (
+        <video
+          key={index}
+          ref={(el) => {
+            videoRefs.current[index] = el ?? null;
+          }}
+          muted
+          playsInline
+          autoPlay={index === 0}
+          loop 
+          preload={index === 0 ? "auto" : "metadata"}
+          onTimeUpdate={(e) => handleTimeUpdate(e, index)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 z-0 pointer-events-none ${
+            index === current ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <source src={video} type="video/mp4" />
+        </video>
+      ))}
       
-      {/* [SENSEI TIP]: Pasamos el overflow-hidden al 'container'. 
-          Además, aplicamos mask-image. Esto crea un efecto donde el 10% izquierdo y derecho 
-          del contenedor se vuelven transparentes, desvaneciendo los logos al entrar y salir. */}
-      <div 
-        className="container mx-auto px-4 overflow-hidden relative"
-        style={{ 
-          maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', 
-          WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' 
-        }}
+      <button
+        onClick={prevVideo}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition pointer-events-auto"
+        aria-label="Anterior"
       >
-        <div className="relative w-full flex group py-2">
-          <motion.div
-            className="flex gap-6 px-4 w-max"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ ease: "linear", duration: 30, repeat: Infinity }}
-          >
-            {duplicatedAliados.map((aliado, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 bg-white rounded-2xl shadow-sm p-4 flex items-center justify-center w-40 h-20 hover:shadow-md transition-shadow shrink-0"
-              >
-                <Image
-                  src={aliado.src}
-                  alt={aliado.alt}
-                  width={100}
-                  height={60}
-                  className="object-contain"
-                />
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+      
+      <button
+        onClick={nextVideo}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition pointer-events-auto"
+        aria-label="Siguiente"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
+      
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-50">
+        {videos.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              isTransitioning.current = true;
+              setCurrent(index);
+            }}
+            className={`h-3 w-3 rounded-full transition ${
+              index === current ? "bg-white scale-110" : "bg-white/50 hover:bg-white/80"
+            } pointer-events-auto`}
+            aria-label={`Ir al video ${index + 1}`}
+          />
+        ))}
       </div>
-    </section>
+    </div>
   );
 }

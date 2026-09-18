@@ -1,7 +1,7 @@
 "use client";
-import Head from "next/head";
 import Header from "../../components/Header";
-import Fotter from "../../components/Footer";
+
+import Footer from "@/components/Footer"; 
 import { Shield, Eye, Star, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -26,12 +26,14 @@ export default function Nosotros() {
         >
           Conoce más sobre nuestra empresa especializada en equipos de protección personal
         </motion.p>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-8 max-w-6xl mx-auto items-start">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className="text-left space-y-6 mt-45"
+
+            className="text-left space-y-6 mt-12" 
           >
             <h2 className="text-gray-900 font-extrabold text-2xl md:text-3xl text-center md:text-left">
               Nuestra Historia
@@ -47,6 +49,7 @@ export default function Nosotros() {
               seguridad en el trabajo.
             </p>
           </motion.div>
+          
           <div className="space-y-6">
             {[
               {
@@ -93,15 +96,14 @@ export default function Nosotros() {
             ))}
           </div>
         </div>
+        
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl p-6 md:p-9 mt-10 max-w-5xl mx-auto shadow-lg"
         >
-          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-            Nuestro Compromiso
-          </h3>
+          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Nuestro Compromiso</h3>
           <p className="text-gray-700 text-sm md:text-base leading-relaxed">
             En SEINVISAC entendemos que la seguridad laboral no es negociable. Por eso, cada
             producto que ofrecemos pasa por rigurosos controles de calidad y cumple con las
@@ -109,16 +111,8 @@ export default function Nosotros() {
           </p>
         </motion.div>
       </div>
-      <a
-          href="https://wa.me/51924338443?text=Hola%20SEINVISAC,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
-          aria-label="WhatsApp"
-        >
-          <MessageCircle size={28} />
-        </a>
-      <Fotter />
+
+      <Footer />
     </>
   );
 }
