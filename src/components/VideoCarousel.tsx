@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const videos: string[] = [
@@ -12,16 +12,24 @@ const videos: string[] = [
 export default function VideoCarousel() {
   const [current, setCurrent] = useState<number>(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  
+  const isFirstMount = useRef(true);
+  const isTransitioning = useRef(false);
 
-  const isFirstMount = useRef(true); 
+  const nextVideo = useCallback(() => {
+    setCurrent((prev) => (prev === videos.length - 1 ? 0 : prev + 1));
+  }, []);
+
+  const prevVideo = useCallback(() => {
+    setCurrent((prev) => (prev === 0 ? videos.length - 1 : prev - 1));
+  }, []);
 
   useEffect(() => {
-
     if (isFirstMount.current) {
       isFirstMount.current = false;
       return;
     }
+
+    isTransitioning.current = false;
 
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
@@ -37,16 +45,17 @@ export default function VideoCarousel() {
     });
   }, [current]);
 
-  const prevVideo = () => {
-    setCurrent((prev) => (prev === 0 ? videos.length - 1 : prev - 1));
-  };
-
-  const nextVideo = () => {
-    setCurrent((prev) => (prev === videos.length - 1 ? 0 : prev + 1));
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>, index: number) => {
+    if (index !== current || isTransitioning.current) return;
+    
+    const video = e.currentTarget;
+    if (video.duration > 0 && video.duration - video.currentTime <= 0.8) {
+      isTransitioning.current = true;
+      nextVideo();
+    }
   };
 
   return (
-
     <div className="relative h-[32rem] w-full overflow-hidden bg-[#111]">
       {videos.map((video, index) => (
         <video
@@ -54,11 +63,13 @@ export default function VideoCarousel() {
           ref={(el) => {
             videoRefs.current[index] = el ?? null;
           }}
-          onEnded={nextVideo}
           muted
           playsInline
           autoPlay={index === 0}
+          loop
           preload={index === 0 ? "auto" : "metadata"}
+          onTimeUpdate={(e) => handleTimeUpdate(e, index)}
+          // [SENSEI TIP]: 'absolute inset-0' es CRÍTICO para que los videos no se empujen hacia abajo
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 z-0 pointer-events-none ${
             index === current ? "opacity-100" : "opacity-0"
           }`}
@@ -87,7 +98,10 @@ export default function VideoCarousel() {
         {videos.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrent(index)}
+            onClick={() => {
+              isTransitioning.current = true;
+              setCurrent(index);
+            }}
             className={`h-3 w-3 rounded-full transition ${
               index === current ? "bg-white scale-110" : "bg-white/50 hover:bg-white/80"
             } pointer-events-auto`}

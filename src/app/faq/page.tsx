@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Minus, MessageCircle } from "lucide-react"; 
-import Link from "next/link"; // [SENSEI TIP]: Importamos Link para enrutar los botones
+import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "@/components/Footer";
 

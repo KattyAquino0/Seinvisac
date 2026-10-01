@@ -14,7 +14,6 @@ interface Producto {
   nombre: string;
   descripcion: string;
   categoria: string;
-  sku?: string;
   caracteristicas?: string[]; 
   imagenes: Imagen[];
 }
@@ -36,11 +35,48 @@ export default function Productos() {
   const [loading, setLoading] = useState(true);
   
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null);
-  
-
   const [imagenActiva, setImagenActiva] = useState<number>(0);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
+
+  useEffect(() => {
+
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    window.scrollTo(0, 0);
+  }, []);
+
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setProductoSeleccionado(null);
+      }
+    };
+
+
+    if (productoSeleccionado) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [productoSeleccionado]);
+
+
+  useEffect(() => {
+    if (productoSeleccionado) {
+      document.body.style.overflow = "hidden";
+      setImagenActiva(0); 
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [productoSeleccionado]);
+
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -63,17 +99,6 @@ export default function Productos() {
     fetchProductos();
   }, [backendUrl]); 
 
-
-  useEffect(() => {
-    if (productoSeleccionado) {
-      document.body.style.overflow = "hidden";
-      setImagenActiva(0); 
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => { document.body.style.overflow = "unset"; };
-  }, [productoSeleccionado]);
-
   const productosFiltrados = useMemo(() => {
     if (categoriaActiva === "Todos") return productos;
     const cat = categoriaActiva.trim().toLowerCase();
@@ -81,6 +106,11 @@ export default function Productos() {
       (p) => p.categoria?.trim().toLowerCase() === cat
     );
   }, [categoriaActiva, productos]);
+
+  const handleCategoriaClick = (id: string) => {
+    setCategoriaActiva(id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -94,7 +124,7 @@ export default function Productos() {
               {categorias.map((cat) => (
                 <li key={cat.id}>
                   <button
-                    onClick={() => setCategoriaActiva(cat.id)}
+                    onClick={() => handleCategoriaClick(cat.id)}
                     className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-200 ${
                       categoriaActiva === cat.id
                         ? "bg-blue-600 text-white font-semibold shadow-sm"
@@ -137,9 +167,7 @@ export default function Productos() {
                       className="group bg-white rounded-2xl shadow-md border-2 border-transparent hover:border-orange-500 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
                       whileHover={{ y: -5 }}
                     >
-
-                      <div className="relative h-56 w-full p-4 overflow-hidden rounded-t-2xl bg-white flex-shrink-0">
-
+                      <div className="relative h-56 w-full overflow-hidden rounded-t-2xl bg-white flex-shrink-0">
                         <img
                           src={
                             producto.imagenes && producto.imagenes[0]
@@ -147,7 +175,7 @@ export default function Productos() {
                               : "/images/default.png"
                           }
                           alt={producto.nombre}
-                          className={`absolute inset-0 object-contain w-full h-full mix-blend-multiply p-4 transition-all duration-700 
+                          className={`absolute inset-0 object-contain w-full h-full mix-blend-multiply transition-all duration-700 
                             ${producto.imagenes && producto.imagenes.length > 1 ? 'group-hover:opacity-0 group-hover:scale-95' : 'group-hover:scale-110'}
                           `}
                         />
@@ -156,7 +184,7 @@ export default function Productos() {
                           <img
                             src={`${backendUrl}${producto.imagenes[1].url}`}
                             alt={`${producto.nombre} - vista alternativa`}
-                            className="absolute inset-0 object-contain w-full h-full mix-blend-multiply p-4 opacity-0 scale-110 group-hover:opacity-100 group-hover:scale-100 transition-all duration-700"
+                            className="absolute inset-0 object-contain w-full h-full mix-blend-multiply opacity-0 scale-110 group-hover:opacity-100 group-hover:scale-100 transition-all duration-700"
                           />
                         )}
                       </div>
@@ -180,7 +208,6 @@ export default function Productos() {
           </section>
         </div>
       </main>
-
 
       <AnimatePresence>
         {productoSeleccionado && (
@@ -208,13 +235,8 @@ export default function Productos() {
                 <X size={20} strokeWidth={3} />
               </button>
 
-
               <div className="w-full md:w-1/2 p-6 md:p-10 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col bg-white overflow-y-auto">
-                
-
                 <div className="flex flex-col-reverse sm:flex-row gap-4 mb-8 h-auto sm:h-80">
-                  
-
                   {productoSeleccionado.imagenes && productoSeleccionado.imagenes.length > 1 && (
                     <div 
                       className="flex flex-row sm:flex-col gap-3 overflow-auto sm:w-20 shrink-0 pb-2 sm:pb-0 sm:pr-2 scroll-smooth"
@@ -229,18 +251,16 @@ export default function Productos() {
                             imagenActiva === idx ? 'border-orange-500 shadow-md scale-105' : 'border-gray-100 hover:border-orange-300 opacity-70 hover:opacity-100'
                           }`}
                         >
-                          <img src={`${backendUrl}${img.url}`} alt={`Miniatura ${idx + 1}`} className="w-full h-full object-contain p-1 mix-blend-multiply bg-white" />
+                          <img src={`${backendUrl}${img.url}`} alt={`Miniatura ${idx + 1}`} className="w-full h-full object-contain mix-blend-multiply bg-white" />
                         </button>
                       ))}
                     </div>
                   )}
 
-
-                  <div className="relative flex-grow bg-white border border-gray-100 rounded-2xl overflow-hidden p-6 flex items-center justify-center min-h-[250px] sm:min-h-0">
-
+                  <div className="relative flex-grow bg-white border border-gray-100 rounded-2xl overflow-hidden flex items-center justify-center min-h-[250px] sm:min-h-0">
                     <AnimatePresence mode="wait">
                       <motion.img
-                        key={imagenActiva}
+                        key={imagenActiva} 
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.05 }}
@@ -251,11 +271,10 @@ export default function Productos() {
                             : "/images/default.png"
                         }
                         alt={productoSeleccionado.nombre}
-                        className="absolute inset-0 w-full h-full object-contain mix-blend-multiply p-4"
+                        className="absolute inset-0 w-full h-full object-contain mix-blend-multiply"
                       />
                     </AnimatePresence>
                   </div>
-
                 </div>
                 
                 <h3 className="text-xl font-bold text-gray-900 mb-3 border-b pb-2">Descripción</h3>
@@ -266,17 +285,9 @@ export default function Productos() {
 
               <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col bg-gray-50/50 overflow-y-auto">
                 <div className="flex flex-col mb-6 mt-4 md:mt-0">
-                  <h2 className="text-3xl font-extrabold text-gray-900 leading-tight mb-2 pr-8">
+                  <h2 className="text-3xl font-extrabold text-gray-900 leading-tight pr-8">
                     {productoSeleccionado.nombre}
                   </h2>
-                  {productoSeleccionado.sku && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500 font-bold uppercase tracking-wider bg-gray-200 px-2 py-1 rounded-md">
-                        REF / SKU
-                      </span>
-                      <span className="text-sm font-bold text-gray-800">{productoSeleccionado.sku}</span>
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex-grow">
@@ -311,17 +322,6 @@ export default function Productos() {
           </div>
         )}
       </AnimatePresence>
-
-      <a
-        href="https://wa.me/51924338443?text=Hola%20SEINVISAC,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 hover:-translate-y-1"
-        aria-label="WhatsApp"
-      >
-        <MessageCircle size={28} />
-      </a>
-      <Footer />
     </>
   );
 }

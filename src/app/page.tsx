@@ -58,7 +58,6 @@ export default function Home() {
   }, [backendUrl]);
 
   useEffect(() => {
-
     if (!scrollRef.current || destacados.length === 0 || productoSeleccionado) return;
     
     const interval = setInterval(() => {
@@ -77,7 +76,6 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [destacados, productoSeleccionado]); 
-
 
   useEffect(() => {
     if (productoSeleccionado) {
@@ -197,7 +195,6 @@ export default function Home() {
           </div>
         </section>
 
-
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
             <motion.div
@@ -235,7 +232,6 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
-
 
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4 mb-6">
@@ -346,7 +342,6 @@ export default function Home() {
           </div>
         </section>
 
-
         <section className="py-20 bg-gray-100">
           <div className="container mx-auto px-4 lg:px-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -401,7 +396,6 @@ export default function Home() {
           </div>
         </section>
 
-
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4 lg:px-12">
             <motion.h3
@@ -446,7 +440,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
 
       <AnimatePresence>
         {productoSeleccionado && (
@@ -569,17 +562,6 @@ export default function Home() {
           </div>
         )}
       </AnimatePresence>
-
-
-      <a
-        href="https://wa.me/51924338443?text=Hola%20SEINVISAC,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 hover:-translate-y-1"
-        aria-label="WhatsApp"
-      >
-        <MessageCircle size={28} />
-      </a>
 
       <Footer />
     </>
