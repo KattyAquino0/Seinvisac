@@ -2,7 +2,7 @@
 import Header from "../../components/Header";
 
 import Footer from "@/components/Footer"; 
-import { Shield, Eye, Star, MessageCircle } from "lucide-react";
+import { Shield, Eye, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Nosotros() {
