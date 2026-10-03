@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'; 
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 
 const navLinks = [
   { name: 'Inicio', href: '/' },
@@ -42,8 +44,8 @@ const Header = () => {
                   href={link.href} 
                   className={`relative pb-1 text-sm font-semibold tracking-wide transition-colors duration-200 uppercase ${
                     isActive 
-                      ? 'text-[#D77F4A]' 
-                      : 'text-gray-600 hover:text-[#D77F4A]'
+                      ? 'text-orange-500' 
+                      : 'text-[#1B2025] hover:text-orange-500'
                   }`}
                 >
                   {link.name}
@@ -56,13 +58,23 @@ const Header = () => {
             })}
           </nav>
           <div className="hidden md:flex items-center px-3">
-            <Link 
-              href="/contacto" 
-              className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold tracking-wide text-white bg-[#D77F4A] hover:bg-[#b96634] rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
-            >
-              Contáctanos
-            </Link>
-          </div>
+  <motion.div
+    whileHover={{ y: -2 }}
+    whileTap={{ scale: 0.97 }}
+  >
+    <Link
+      href="/contacto"
+      className="group inline-flex items-center gap-2.5 bg-gray-950 hover:bg-orange-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:shadow-orange-500/25 transition-all duration-300"
+    >
+      Contáctanos
+
+      <ArrowUpRight
+        size={17}
+        className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
+      />
+    </Link>
+  </motion.div>
+</div>
           
           {/* Botón de Menú Hamburguesa (Solo se ve en Móviles) */}
           <div className="md:hidden flex items-center">
